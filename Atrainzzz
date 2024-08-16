@@ -1,36 +1,58 @@
-local Tool = script.Parent
+local Players = game:GetService("Players")
 
--- Animation and Speed Configuration
-local animationId = "rbxassetid://18949773971" -- Replace with your animation ID
+-- Configuration
+local animationId = "rbxassetid://18949773971" -- Replace this with your animation ID
 local speedBoost = 100
 local duration = 40 -- Duration in seconds
 
--- Function to Handle Tool Activation
-local function onActivated()
-local player = game.Players.LocalPlayer
-local character = player.Character
-if not character then return end
+local function createTool(player)
+    -- Create the tool
+    local tool = Instance.new("Tool")
+    tool.Name = "SpeedBoostTool"
+    tool.RequiresHandle = false
 
-local humanoid = character:FindFirstChildOfClass("Humanoid")
-if not humanoid then return end
+    -- Create the script to be placed inside the tool
+    local script = Instance.new("LocalScript")
+    script.Source = [[
+        local Tool = script.Parent
 
--- Play Animation
-local animation = Instance.new("Animation")
-animation.AnimationId = animationId
-local animator = humanoid:FindFirstChildOfClass("Animator") or humanoid:WaitForChild("Animator")
-local animationTrack = animator:LoadAnimation(animation)
-animationTrack:Play()
+        -- Animation and Speed Configuration
+        local animationId = "]] .. animationId .. [["
+        local speedBoost = ]] .. speedBoost .. [[
+        local duration = ]] .. duration .. [[
 
--- Store Original WalkSpeed
-local originalWalkSpeed = humanoid.WalkSpeed
+        -- Function to Handle Tool Activation
+        local function onActivated()
+            local player = game.Players.LocalPlayer
+            local character = player.Character
+            if not character then return end
 
--- Increase Speed
-humanoid.WalkSpeed = speedBoost
+            local humanoid = character:FindFirstChildOfClass("Humanoid")
+            if not humanoid then return end
 
--- Revert Speed After Duration
-wait(duration)
-humanoid.WalkSpeed = originalWalkSpeed
+            -- Play Animation
+            local animation = Instance.new("Animation")
+            animation.AnimationId = animationId
+            local animator = humanoid:FindFirstChildOfClass("Animator") or humanoid:WaitForChild("Animator")
+            local animationTrack = animator:LoadAnimation(animation)
+            animationTrack:Play()
+
+            -- Store Original WalkSpeed
+            local originalWalkSpeed = humanoid.WalkSpeed
+
+            -- Increase Speed
+            humanoid.WalkSpeed = speedBoost
+
+            -- Revert Speed After Duration
+            wait(duration)
+            humanoid.WalkSpeed = originalWalkSpeed
+        end
+
+        -- Connect Tool Activation to Function
+        Tool.Activated:Connect(onActivated)
+    ]]
+    script.Parent = tool
+
+    -- Add the tool to the player's backpack
+    tool.Parent = player:WaitForChild("Backpack")
 end
-
--- Connect Tool Activation to Function
-Tool.Activated:Connect(onActivated)
