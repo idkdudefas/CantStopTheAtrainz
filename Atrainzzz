@@ -1,0 +1,36 @@
+local Tool = script.Parent
+
+-- Animation and Speed Configuration
+local animationId = "rbxassetid://18949773971" -- Replace with your animation ID
+local speedBoost = 100
+local duration = 40 -- Duration in seconds
+
+-- Function to Handle Tool Activation
+local function onActivated()
+local player = game.Players.LocalPlayer
+local character = player.Character
+if not character then return end
+
+local humanoid = character:FindFirstChildOfClass("Humanoid")
+if not humanoid then return end
+
+-- Play Animation
+local animation = Instance.new("Animation")
+animation.AnimationId = animationId
+local animator = humanoid:FindFirstChildOfClass("Animator") or humanoid:WaitForChild("Animator")
+local animationTrack = animator:LoadAnimation(animation)
+animationTrack:Play()
+
+-- Store Original WalkSpeed
+local originalWalkSpeed = humanoid.WalkSpeed
+
+-- Increase Speed
+humanoid.WalkSpeed = speedBoost
+
+-- Revert Speed After Duration
+wait(duration)
+humanoid.WalkSpeed = originalWalkSpeed
+end
+
+-- Connect Tool Activation to Function
+Tool.Activated:Connect(onActivated)
