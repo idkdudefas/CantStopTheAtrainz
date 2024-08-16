@@ -8,7 +8,7 @@ local duration = 40 -- Duration in seconds
 local function createTool(player)
     -- Create the tool
     local tool = Instance.new("Tool")
-    tool.Name = "SpeedBoostTool"
+    tool.Name = "Train A"
     tool.RequiresHandle = false
 
     -- Create the script to be placed inside the tool
