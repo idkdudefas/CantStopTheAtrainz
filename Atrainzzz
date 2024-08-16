@@ -3,7 +3,7 @@ local Players = game:GetService("Players")
 -- Configuration
 local animationId = "rbxassetid://18949773971" -- Replace this with your animation ID
 local speedBoost = 100
-local duration = 40 -- Duration in seconds
+local duration = 36 -- Duration in seconds
 
 local function createTool(player)
     -- Create the tool
@@ -46,6 +46,12 @@ local function createTool(player)
             -- Revert Speed After Duration
             wait(duration)
             humanoid.WalkSpeed = originalWalkSpeed
+
+            -- Stop the animation after the duration
+            animationTrack:Stop()
+
+            -- Disable the tool after use
+            Tool.Enabled = false
         end
 
         -- Connect Tool Activation to Function
@@ -55,4 +61,17 @@ local function createTool(player)
 
     -- Add the tool to the player's backpack
     tool.Parent = player:WaitForChild("Backpack")
+end
+
+-- Function to handle when a player joins the game
+local function onPlayerAdded(player)
+    createTool(player)
+end
+
+-- Connect the function to the PlayerAdded event
+Players.PlayerAdded:Connect(onPlayerAdded)
+
+-- Add the tool to any players already in the game
+for _, player in ipairs(Players:GetPlayers()) do
+    createTool(player)
 end
