@@ -9,7 +9,7 @@ tool.Activated:Connect(function()
     local character = player.Character or player.CharacterAdded:Wait()
     local humanoid = character:FindFirstChildOfClass("Humanoid")
     local runAnim = Instance.new("Animation")
-    runAnim.AnimationId = "rbxassetid://18897118507"
+    runAnim.AnimationId = "rbxassetid://18897115785" -- Updated Run Animation ID
 
     local endAnim = Instance.new("Animation")
     endAnim.AnimationId = "rbxassetid://17109012516"
