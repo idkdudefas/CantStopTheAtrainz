@@ -1,99 +1,52 @@
-local Players = game:GetService("Players")
+local tool = Instance.new("Tool")
+tool.Name = "A Train"
+tool.RequiresHandle = false
+tool.CanBeDropped = false
+tool.Activated:Connect(function()
+    print("Tool has been created!") -- Confirmation in console
 
--- Configuration
-local animationId = "rbxassetid://18715691149" -- Replace this with your run animation ID (which is also the train animation)
-local stoppedAnimationId = "rbxassetid://10491993682" -- Stopped animation ID
-local speedBoost = 100
-local runDuration = 20 -- Duration for running animation in seconds
-local totalDuration = 36 -- Total duration of speed boost in seconds
+    local player = game.Players.LocalPlayer
+    local character = player.Character or player.CharacterAdded:Wait()
+    local humanoid = character:FindFirstChildOfClass("Humanoid")
+    local runAnim = Instance.new("Animation")
+    runAnim.AnimationId = "rbxassetid://18897118507"
 
-local function createTool(player)
-    -- Create the tool
-    local tool = Instance.new("Tool")
-    tool.Name = "Train A"
-    tool.RequiresHandle = false
+    local endAnim = Instance.new("Animation")
+    endAnim.AnimationId = "rbxassetid://17109012516"
 
-    -- Create the script to be placed inside the tool
-    local script = Instance.new("LocalScript")
-    script.Source = [[
-        local Tool = script.Parent
+    local runAnimTrack = humanoid:LoadAnimation(runAnim)
+    local endAnimTrack = humanoid:LoadAnimation(endAnim)
 
-        -- Animation and Speed Configuration
-        local animationId = "]] .. animationId .. [["
-        local stoppedAnimationId = "]] .. stoppedAnimationId .. [["
-        local speedBoost = ]] .. speedBoost .. [[
-        local runDuration = ]] .. runDuration .. [[
-        local totalDuration = ]] .. totalDuration .. [[
+    humanoid.WalkSpeed = 100
+    runAnimTrack:Play()
 
-        -- Function to Handle Tool Activation
-        local function onActivated()
-            local player = game.Players.LocalPlayer
-            if not player then return end
-            
-            local character = player.Character or player.CharacterAdded:Wait()
-            if not character then return end
+    -- End animation after 18.8 seconds
+    delay(18.8, function()
+        runAnimTrack:Stop()
+        endAnimTrack:Play()
+    end)
 
-            local humanoid = character:FindFirstChildOfClass("Humanoid")
-            if not humanoid then return end
+    -- Reset walkspeed after 20 seconds
+    delay(20, function()
+        humanoid.WalkSpeed = 16 -- Default WalkSpeed
+        endAnimTrack:Stop()
+    end)
+end)
 
-            -- Play Running Animation for Speed Boost
-            local runningAnimation = Instance.new("Animation")
-            runningAnimation.AnimationId = animationId
-            
-            local animator = humanoid:FindFirstChildOfClass("Animator") or Instance.new("Animator", humanoid)
-            local runTrack = animator:LoadAnimation(runningAnimation)
-            
-            -- Store Original WalkSpeed
-            local originalWalkSpeed = humanoid.WalkSpeed
-
-            -- Increase Speed
-            humanoid.WalkSpeed = speedBoost
-
-            -- Start Running Animation
-            runTrack:Play()
-            
-            wait(runDuration) -- Wait for 20 seconds
-
-            -- Stop Running Animation and Activate Stopped Animation
-            runTrack:Stop() 
-            
-            -- Play Stopped Animation after running
-            local stoppedAnimation = Instance.new("Animation")
-            stoppedAnimation.AnimationId = stoppedAnimationId
-            
-            local stoppedTrack = animator:LoadAnimation(stoppedAnimation)
-            stoppedTrack:Play()
-
-            -- Revert Speed After Total Duration (36 seconds)
-            wait(totalDuration - runDuration) -- Wait for remaining time after run duration
-            
-            humanoid.WalkSpeed = originalWalkSpeed
-            
-            -- Stop the stopped animation after total duration (optional)
-            stoppedTrack:Stop()
-
-            -- Disable the tool after use (optional)
-            Tool.Enabled = false
-        end
-
-        -- Connect Tool Activation to Function
-        Tool.Activated:Connect(onActivated)
-    ]]
-    script.Parent = tool
-
-    -- Add the tool to the player's backpack
-    tool.Parent = player:WaitForChild("Backpack")
+-- Input for PC (Key '5')
+local function onInputBegan(input)
+    if input.KeyCode == Enum.KeyCode.Five then
+        tool:Activate()
+    end
 end
 
--- Function to handle when a player joins the game
-local function onPlayerAdded(player)
-    createTool(player)
+-- Input for Mobile (Touch Screen)
+local function onTouchTap()
+    tool:Activate()
 end
 
--- Connect the function to the PlayerAdded event
-Players.PlayerAdded:Connect(onPlayerAdded)
+-- Bind inputs
+game:GetService("UserInputService").InputBegan:Connect(onInputBegan)
+game:GetService("UserInputService").TouchTap:Connect(onTouchTap)
 
--- Add the tool to any players already in the game
-for _, player in ipairs(Players:GetPlayers()) do
-    createTool(player)
-end
+tool.Parent = game.Players.LocalPlayer.Backpack
