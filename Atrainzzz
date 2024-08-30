@@ -2,7 +2,9 @@ local tool = Instance.new("Tool")
 tool.Name = "A Train"
 tool.RequiresHandle = false
 tool.CanBeDropped = false
-tool.Activated:Connect(function()
+
+-- Function to activate the tool
+local function activateTool()
     print("Tool has been created!") -- Confirmation in console
 
     local player = game.Players.LocalPlayer
@@ -31,19 +33,21 @@ tool.Activated:Connect(function()
         humanoid.WalkSpeed = 16 -- Default WalkSpeed
         endAnimTrack:Stop()
     end)
-end)
+end
 
--- Input for PC (Key '5')
+-- Activate tool for PC (Key '5')
 local function onInputBegan(input)
     if input.KeyCode == Enum.KeyCode.Five then
-        tool:Activate()
+        activateTool()
     end
 end
 
--- Input for Mobile (Touch Screen)
+-- Activate tool for Mobile (Touch Screen)
 local function onTouchTap()
-    tool:Activate()
+    activateTool()
 end
+
+tool.Activated:Connect(activateTool)
 
 -- Bind inputs
 game:GetService("UserInputService").InputBegan:Connect(onInputBegan)
