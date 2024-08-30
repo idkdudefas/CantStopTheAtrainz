@@ -10,11 +10,12 @@ local function activateTool()
     local player = game.Players.LocalPlayer
     local character = player.Character or player.CharacterAdded:Wait()
     local humanoid = character:FindFirstChildOfClass("Humanoid")
+    
     local runAnim = Instance.new("Animation")
-    runAnim.AnimationId = "rbxassetid://18897115785" -- Updated Run Animation ID
+    runAnim.AnimationId = "rbxassetid://18897115785" -- Run Animation ID
 
     local endAnim = Instance.new("Animation")
-    endAnim.AnimationId = "rbxassetid://17109012516"
+    endAnim.AnimationId = "rbxassetid://17109012516" -- End Animation ID
 
     local runAnimTrack = humanoid:LoadAnimation(runAnim)
     local endAnimTrack = humanoid:LoadAnimation(endAnim)
@@ -22,13 +23,13 @@ local function activateTool()
     humanoid.WalkSpeed = 100
     runAnimTrack:Play()
 
-    -- End animation after 18.8 seconds
+    -- Stop the run animation and play the end animation after 18.8 seconds
     delay(18.8, function()
         runAnimTrack:Stop()
         endAnimTrack:Play()
     end)
 
-    -- Reset walkspeed after 20 seconds
+    -- Reset walkspeed after 20 seconds and stop the end animation
     delay(20, function()
         humanoid.WalkSpeed = 16 -- Default WalkSpeed
         endAnimTrack:Stop()
